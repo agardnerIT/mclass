@@ -115,7 +115,20 @@ When Argo picks up the app, it will become available on port `80` and you must a
 
 ## Observability of the Codespace
 
-The codespace self-tests on startup so look for a pytest trace showing the health.
+### Self-Test OpenTelemetry traces on startup
+
+The codespace self-tests on startup so look for a trace showing the end-to-end health:
+
+```
+https://abc12345.sprint.apps.dynatracelabs.com/ui/apps/dynatrace.classic.distributed.traces/ui/diagnostictools/purepaths?gtf=-30m&gf=all&servicefilter=0%1E50%11codespace-platform%1067%11startup-automated-test
+```
+1. Open the `Distributed Traces` screen
+2. Filter for `Service Name ~ codespace-platform`
+3. Filter for `Span name (ingested spans only) ~ startup-automated-test`
+
+![startup trace](assets/startup-trace.jpg)
+
+### Logs
 
 If something goes wrong setting up the codespace, logs are sent directly to the Dynatrace SaaS ingest endpoint so `fetch logs` to see what went wrong.
 
