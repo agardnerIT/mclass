@@ -103,6 +103,16 @@ Change to "Ports" tab and open ArgoCD (port 30100) & log in.
 
 Backstage is also available (port 30105).
 
+### Create An Application
+
+In backstage (port 30105), navigate to "Create" and use the "Create a New Application" template.
+
+The new repo will be templated into your GitHub org with the following naming scheme: `YourOrg/simplenodeservice-team01-preprod`
+
+When Argo picks up the app, it will become available on port `80` and you must append the path `/simplenodeservice-team01-preprod` like so:
+
+`https://<CodeSpaceNameHere>-80.app.github.dev/<AppName>-<TeamName>-<EnvironmentName>` for example: `https://verbose-doodle-6vwwx955567f4qj9-80.app.github.dev/simplenodeservice-team01-preprod`
+
 ## Observability of the Codespace
 
 The codespace self-tests on startup so look for a pytest trace showing the health.
