@@ -82,7 +82,7 @@ spec:
           title: "Include Security scans?"
           description: "Scan this app automatically and push results to Dynatrace?"
           type: boolean
-          default: false
+          default: true
         includeDTConfig:
           title: "Include Dynatrace Configuration?"
           description: "Include level 1 (basic) Dynatrace Configuration as Code for this application?"
