@@ -71,47 +71,39 @@ Go [here](https://github.com/settings/personal-access-tokens/new) and create a n
 
 ### Create Codespace Secrets
 
-At this point you should have six pieces of information (seven if Dynatrace is running in an environment other than `live`).
+At this point you should have seven pieces of information.
 
-In your fork, go to: `Settings > Secrets and Variables > Codespaces`. Create secrets with these EXACT names:
+In your fork, click the green `Code` button, change to `Codespaces`. Click the `...` and choose `New with options...`
 
-- `GH_RW_TOKEN` (the GitHub Personal Access Token)
-- `DT_ENV_NAME` (eg. `abc12345`)
-- `DT_RW_API_TOKEN` - The DT API token created above.
-- `DT_OAUTH_ACCOUNT_URN`
-- `DT_OAUTH_CLIENT_ID`
-- `DT_OAUTH_CLIENT_SECRET`
-- (optional) `DT_ENV` eg. `dev`, `sprint` or `live`. Defaults to `live`
+Fill in the form and launch the codespace.
 
-## Starting the Platform
-
-In your fork, click the green "Code" button then change to "Codespaces" and click  "create codespace on main".
+![codespaces new with options](assets/codespace-new-with-options.jpg)
 
 The codespace will launch in a new browser window.
 
 Wait until the `Running postStartCommand...` disappears. It should take ~10 minutes.
 
-## Usage Instructions (in progress)
+## Usage Instructions
 
-Get argocd password
+Get ArgoCD password:
 ```
 ARGOCDPWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 echo $ARGOCDPWD
 ```
 
-Change to "Ports" tab and open ArgoCD (port 30100) & log in.
+Change to `Ports` tab and open ArgoCD (port `30100`) & log in.
 
-Backstage is also available (port 30105).
+Backstage is also available (port `30105`).
 
 ### Create An Application
 
-In backstage (port 30105), navigate to "Create" and use the "Create a New Application" template.
+In backstage (port `30105`), navigate to "Create" and use the "Create a New Application" template.
 
 The new repo will be templated into your GitHub org with the following naming scheme: `YourOrg/simplenodeservice-team01-preprod`
 
-When Argo picks up the app, it will become available on port `80` and you must append the path `/simplenodeservice-team01-preprod` like so:
+When Argo picks up the app, it will become available on port `80` and you must manually append (in the browser bar) the path `/simplenodeservice-{teamName}-{environment}` like so:
 
-`https://<CodeSpaceNameHere>-80.app.github.dev/<AppName>-<TeamName>-<EnvironmentName>` for example: `https://verbose-doodle-6vwwx955567f4qj9-80.app.github.dev/simplenodeservice-team01-preprod`
+For example: `https://verbose-doodle-6vwwx955567f4qj9-80.app.github.dev/simplenodeservice-team01-preprod`
 
 ## Observability of the Codespace
 
