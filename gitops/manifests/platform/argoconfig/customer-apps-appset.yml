@@ -1,45 +1,36 @@
----
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: customer-apps
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
-  - scmProvider:
-      filters:
-      - repositoryMatch: -cd$
-        pathsExist: [argoapp]
-      cloneProtocol: https
-      github:
-        allBranches: false
-        organization: "GITHUB_ORG_NAME_PLACEHOLDER"
-        # Use authenticated request to avoid hitting API limit
-        # Which permissions does the token need?
-        # Reference to a Secret containing an access token. (optional)
-        # Needs "read" metadata permissions
-        tokenRef:
-          secretName: github-token
-          key: token
+  - git:
+      repoURL: "https://github.com/GITHUB_ORG_SLASH_REPOSITORY_PLACEHOLDER.git"
+      revision: HEAD
+      directories:
+      - path: "customer-apps/*"
   template:
     metadata:
-      name: "{{ repository }}"
+      name: '{{.path.basename}}'
       annotations:
         notifications.argoproj.io/subscribe.on-created.dynatrace: ""
         notifications.argoproj.io/subscribe.on-deployed.dynatrace: ""
         notifications.argoproj.io/subscribe.on-health-degraded.dynatrace: ""
         notifications.argoproj.io/subscribe.on-sync-failed.dynatrace: ""
         notifications.argoproj.io/subscribe.on-sync-running.dynatrace: ""
-        notifications.argoproj.io/subscribe.on-sync-succeeded.dynatrace: ""       
+        notifications.argoproj.io/subscribe.on-sync-succeeded.dynatrace: ""
     spec:
-      project: default
+      project: "default"
       source:
-        repoURL: "{{ url }}"
+        repoURL: "https://github.com/GITHUB_ORG_SLASH_REPOSITORY_PLACEHOLDER.git"
         targetRevision: HEAD
-        path: argoapp
+        path: '{{.path.path}}'
       destination:
-        server: 'https://kubernetes.default.svc'
-        namespace: '{{ repository }}'
+        server: https://kubernetes.default.svc
+        namespace: '{{.path.basename}}'
       syncPolicy:
         automated:
           prune: true
