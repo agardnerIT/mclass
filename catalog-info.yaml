@@ -29,6 +29,7 @@ spec:
           #enumNames:
           #  - 'simplenodeservice'
           #  - 'project2TODO'
+          default: 'simplenodeservice'
     - title: Your Team's Details
       required:
         - teamIdentifier
@@ -41,16 +42,19 @@ spec:
           type: string
           pattern: '^team\d+$' # must match `team` + 1 or more digit. eg. `team1`, `team123`, `team9843` all valid. `team` invalid.
           ui:placeholder: 'teamIdentifier'
+          default: 'team01'
         teamFullName:
           title: Full name of the team 
           description: Your real team name (eg. Team Best App Ever)
           type: string
           ui:placeholder: 'teamFullName'
+          default: "Team 01"
         teamEmail:
           title: Team Email
-          description: Email to reach your team (eg. team01@dynatrace.training)
+          description: Dummy email to reach your team (eg. team01@example.com)
           type: string
           ui:placeholder: 'teamEmail'
+          default: "team01@example.com"
     - title: Application Details
       required:
         - appVersion
@@ -93,8 +97,8 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: "./${{ parameters.projectName }}-content"
-        targetPath: "./${{ parameters.projectName }}-content"
+        url: "apptemplates/${{ parameters.projectName }}-content"
+        targetPath: "customer-apps/${{ parameters.projectName }}-${{ parameters.teamIdentifier}}-${{ parameters.releaseStage }}"
         values:
          projectName: ${{ parameters.projectName }}
          teamIdentifier: ${{ parameters.teamIdentifier }}
@@ -141,18 +145,21 @@ spec:
     #     securityScans: ${{ parameters.includeSecurityScans }}
     #     projectName: "./${{ parameters.projectName }}-template"
     - id: publish
-      action: publish:github
-      name: Publish to Github
+      action: publish:github:pull-request
+      name: Push Changes to Github
       input:
-        repoUrl: "github.com?repo=${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd&owner=GITHUB_ORG_NAME_PLACEHOLDER"
-        sourcePath: "./${{ parameters.projectName }}-content"
-        repoVisibility: 'public'
-        defaultBranch: 'main'
-        gitAuthorName: ${{ parameters.teamIdentifier }}
-        gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
-        gitCommitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
-        protectDefaultBranch: false
-        #topics: ["${{ parameters.projectName }}", "${{ parameters.releaseStage }}", "${{ parameters.teamIdentifier }}", "from-template", "backstage" ]
+        repoUrl: "github.com?repo=mclass&owner=ag-dummy"
+        branchName: "main"
+        title: "Onboard ${{ parameters.projectName }} for ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
+        description: "This is the description of the PR for ${{ parameters.projectName }} > ${{ parameters.teamIdentifier }} in ${{ parameters.releaseStage }}"
+    #     sourcePath: "./${{ parameters.projectName }}-content"
+    #     repoVisibility: 'public'
+        # defaultBranch: 'main'
+        # gitAuthorName: ${{ parameters.teamIdentifier }}
+        # gitAuthorEmail: "${{ parameters.teamIdentifier }}@dynatrace.training"
+        commitMessage: "Initial commit from ${{ parameters.teamIdentifier }} for template ${{ parameters.projectName }} in ${{ parameters.releaseStage }}"
+        sourcePath: "customer-apps"
+        targetPath: "customer-apps"
     - id: catalog
       name: Register to Catalog
       action: catalog:register
@@ -161,11 +168,11 @@ spec:
         optional: true
   output:
     links:
-      - title: View on Github
-        url: ${{ steps.publish.output.remoteUrl }}
-      - title: View in Catalog
-        icon: catalog
-        entityRef: ${{ steps.catalog.output.entityRef }}
+      # - title: View on Github
+      #   url: ${{ steps.publish.output.remoteUrl }}
+      # - title: View in Catalog
+      #   icon: catalog
+      #   entityRef: ${{ steps.catalog.output.entityRef }}
       - title: View in ArgoCD
         icon: catalog
         url: https://CODESPACE_NAME_PLACEHOLDER-ARGOCD_PORT_NUMBER_PLACEHOLDER.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN_PLACEHOLDER/applications/argocd/${{ parameters.projectName }}-${{ parameters.teamIdentifier }}-${{ parameters.releaseStage }}-cd

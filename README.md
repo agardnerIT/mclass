@@ -81,8 +81,6 @@ In your fork, click the green `Code` button, change to `Codespaces`. Click the `
 
 **Warning!** Do not click the green "Create codespace on demo" button!!
 
-![do not click button](assets/do-not-click-main-codespace-btn.jpg)
-
 Fill in the form and launch the codespace.
 
 ![codespaces new with options](assets/codespace-new-with-options.jpg)
